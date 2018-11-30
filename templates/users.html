@@ -1,0 +1,38 @@
+<!-- Extending Base Template -->
+{% extends 'base.html' %}
+
+<!-- Tile Content -->
+{% block title %} Users {% endblock %}
+
+<!-- Body Content -->
+{% block body %}
+<h1>Users</h1>
+<ul>
+  {% for user in users %}
+  <li>
+    <a href="/{{ user.id }}">{{ user.get_full_name() }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+<h1>Create a user</h1>
+<form action="/" method="POST">
+  <p>
+    First Name:
+    <input name="first-name" placeholder="Enter a first name" required />
+  </p>
+  <p>
+    Last Name:
+    <input name="last-name" placeholder="Enter a last name" required />
+  </p>
+  <p>
+    Image URL:
+    <input
+      name="image-url"
+      type="url"
+      placeholder="Provide an image of this user"
+    />
+  </p>
+  <button type="submit">Add</button>
+</form>
+{% endblock%}
