@@ -9,11 +9,16 @@
 <div>
   <h1>{{ user.get_full_name() }}</h1>
   <div><img src="{{ user.image_url }}" alt="user profile picture" /></div>
-  <div><button>Edit</button> <button>Delete</button></div>
+  <div>
+    <!-- <button>Edit</button> -->
+    <form action="/users/{{ user.id }}/delete" method="POST">
+      <button type="submit">Delete</button>
+    </form>
+    </div>
 </div>
 
 <h1>Edit a user</h1>
-<form action="/" method="POST">
+<form action="/users/{{ user.id }}/edit" method="POST">
   <p>
     First Name:
     <input
@@ -39,15 +44,9 @@
       type="url"
       placeholder="Provide an image
     of this user"
-      {%
-      if
-      not
-      user.image_url
-      %}
+      {% if not user.image_url %}
       value="{{ user.image_url }}"
-      {%
-      endif
-      %}
+      {% endif %}
     />
   </p>
   <div><button>Cancel</button> <button type="submit">Save</button></div>

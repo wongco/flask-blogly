@@ -1,5 +1,2 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-# Ignore Virtual Env
-venv/
+venv
+__pycache__

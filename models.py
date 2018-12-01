@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 """Models for Blogly."""
 """Demo file showing off a model for SQLAlchemy."""
 
-
 db = SQLAlchemy()
 
 
@@ -18,26 +17,18 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    id = db.Column(db.Integer,
-                   primary_key=True,
-                   autoincrement=True)
-    first_name = db.Column(db.String(25),
-                           nullable=False)
-    last_name = db.Column(db.String(25),
-                          nullable=False)
-    image_url = db.Column(db.Text,
-                          nullable=True, default="https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222")
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    first_name = db.Column(db.String(25), nullable=False)
+    last_name = db.Column(db.String(25), nullable=False)
+    image_url = db.Column(
+        db.Text,
+        nullable=True,
+        default=
+        "https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
+    )
 
-    # def greet(self):
-    #     """Greet using name."""
-
-    #     return f"I'm {self.name} the {self.species or 'thing'}"
-
-    # def feed(self, units=10):
-    #     """Nom nom nom."""
-
-    #     self.hunger -= units
-    #     self.hunger = max(self.hunger, 0)
+    def get_full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     # def __repr__(self):
     #     """Show info about pet."""
