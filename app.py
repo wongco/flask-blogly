@@ -27,7 +27,8 @@ def redirect_to_users():
 @app.route("/users")
 def get_users():
     """Show a list users."""
-    users = User.query.all()
+    # Sorts the user list by last name ascending then first name ascending. Does not account for casing. Yet.
+    users = User.query.order_by("last_name asc", "first_name asc").all()
     return render_template('/users.html', users=users)
 
 
@@ -42,9 +43,9 @@ def add_users():
 def add_user():
     """Proccess the form for adding a users."""
     response = request.form
-    first_name = response['first-name']
-    last_name = response['last-name']
-    image_url = response['image-url']
+    first_name = response['first_name']
+    last_name = response['last_name']
+    image_url = response['image_url']
     if not image_url:
         image_url = None
     new_user = User(
@@ -76,10 +77,10 @@ def submit_edit_user(user_id):
     """Processes the edit form for user profile."""
     user = User.query.get_or_404(user_id)
     response = request.form
-    user.first_name = response['first-name']
-    user.last_name = response['last-name']
+    user.first_name = response['first_name']
+    user.last_name = response['last_name']
     if not user.image_url:
-        user.image_url = response['image-url']
+        user.image_url = response['image_url']
     db.session.add(user)
     db.session.commit()
     return redirect(f'/users/{user_id}')
