@@ -59,6 +59,7 @@ def get_user_details(user_id):
     """Displays details for a user."""
 
     user = User.query.get_or_404(user_id)
+    print(repr(user))
     return render_template('/user_details.html', user=user)
 
 

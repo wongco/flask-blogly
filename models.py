@@ -30,11 +30,11 @@ class User(db.Model):
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
 
-    # def __repr__(self):
-    #     """Show info about pet."""
+    def __repr__(self):
+        """Show info about pet."""
 
-    #     p = self
-    #     return f"<Pet {p.id} {p.name} {p.species} {p.hunger}>"
+        user = self
+        return f"<User {user.id} {user.get_full_name()}>"
 
     # @classmethod
     # def get_by_species(cls, species):
