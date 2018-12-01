@@ -29,9 +29,11 @@ class User(db.Model):
 
     @property
     def full_name(self):
+        """Returns the full name as a property"""
         return self.get_full_name()
 
     def get_full_name(self):
+        """Renders a prettified full name."""
         return f'{self.first_name} {self.last_name}'
 
     def __repr__(self):
