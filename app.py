@@ -35,9 +35,7 @@ def get_users():
 def add_users():
     """Add a user."""
 
-    pass
-
-    return
+    return render_template('user_add.html')
 
 
 @app.route("/users", methods=["POST"])
@@ -65,12 +63,11 @@ def get_user_details(user_id):
 
 
 @app.route("/users/<user_id>/edit")
-def edit_user():
+def edit_user(user_id):
     """Displays an edit form for user profile."""
 
-    pass
-
-    return
+    user = User.query.get_or_404(user_id)
+    return render_template('user_edit.html', user=user)
 
 
 @app.route("/users/<user_id>/edit", methods=["POST"])

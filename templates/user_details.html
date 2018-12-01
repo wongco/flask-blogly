@@ -10,46 +10,13 @@
   <h1>{{ user.get_full_name() }}</h1>
   <div><img src="{{ user.image_url }}" alt="user profile picture" /></div>
   <div>
-    <!-- <button>Edit</button> -->
+    <form action="/users/{{ user.id }}/edit" method="GET">
+      <button type="submit">Edit</button>
+    </form>
     <form action="/users/{{ user.id }}/delete" method="POST">
       <button type="submit">Delete</button>
     </form>
     </div>
 </div>
-
-<h1>Edit a user</h1>
-<form action="/users/{{ user.id }}/edit" method="POST">
-  <p>
-    First Name:
-    <input
-      name="first-name"
-      placeholder="Enter a first name"
-      value="{{ user.first_name }}"
-      required
-    />
-  </p>
-  <p>
-    Last Name:
-    <input
-      name="last-name"
-      placeholder="Enter a last name"
-      value="{{ user.last_name }}"
-      required
-    />
-  </p>
-  <p>
-    Image URL:
-    <input
-      name="image-url"
-      type="url"
-      placeholder="Provide an image
-    of this user"
-      {% if not user.image_url %}
-      value="{{ user.image_url }}"
-      {% endif %}
-    />
-  </p>
-  <div><button>Cancel</button> <button type="submit">Save</button></div>
-</form>
 
 {% endblock%}
