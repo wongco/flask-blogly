@@ -27,6 +27,10 @@ class User(db.Model):
         "https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
     )
 
+    @property
+    def full_name(self):
+        return self.get_full_name()
+
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
 
