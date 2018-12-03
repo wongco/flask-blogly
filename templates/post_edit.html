@@ -1,0 +1,22 @@
+<!-- Extending Base Template -->
+{% extends 'base.html' %}
+
+<!-- Tile Content -->
+{% block title %} Edit Post {% endblock %}
+
+<!-- Body Content -->
+{% block body %}
+<form action="/posts/{{ post.id }}/edit" method="POST">
+  <h1>Edit Post</h1>
+  <p>
+    Title:
+    <input name="title" required value='{{ post.title }}'/>
+  </p>
+  <p>
+    Content:
+    <input name="content" required value='{{ post.content }}'/>
+  </p>
+  <a href="/post/{{ post.id }}"><button>Cancel</button></a>
+  <button type="submit">Add</button>
+</form>
+{% endblock%}

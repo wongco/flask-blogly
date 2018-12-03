@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-import datetime
 """Models for Blogly."""
 """Demo file showing off a model for SQLAlchemy."""
 
@@ -57,15 +56,8 @@ class Post(db.Model):
     content = db.Column(db.String(180), nullable=False)
     # Sets created_at to a string of current time and date
     created_at = db.Column(
-        db.String(),
-        nullable=True,
-        default=datetime.datetime.now().strftime('%c'))
+        db.String(), nullable=True, server_default=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    @property
-    def full_name(self):
-        """Returns the full name as a property"""
-        return self.get_full_name()
 
     def __repr__(self):
         """Renders prettified details."""

@@ -18,6 +18,11 @@ connect_db(app)
 db.create_all()
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('/error.html')
+
+
 @app.route("/")
 def redirect_to_users():
     """Redirects to /users."""
@@ -117,6 +122,51 @@ def submit_new_post(user_id):
     db.session.commit()
 
     return redirect(f'/users/{user_id}')
+
+
+@app.route('/posts/<int:post_id>')
+def get_post_details(post_id):
+    '''Show a post.'''
+
+    post = Post.query.get_or_404(post_id)
+    user = post.user
+    return render_template('/post_details.html', post=post, user=user)
+
+
+@app.route('/posts/<int:post_id>/edit')
+def get_post_edit_form(post_id):
+    '''Displays the edit form for a post'''
+
+    post = Post.query.get_or_404(post_id)
+    return render_template('/post_edit.html', post=post)
+
+
+@app.route("/posts/<int:post_id>/edit", methods=["POST"])
+def edit_post(post_id):
+    """Handle edit a post and redirect to post detail page."""
+
+    response = request.form
+    post = Post.query.get_or_404(post_id)
+    post.title = response['title']
+    post.content = response['content']
+
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(f'/posts/{post_id}')
+
+
+@app.route("/posts/<int:post_id>/delete", methods=["POST"])
+def delete_post(post_id):
+    """Handle edit a post and redirect to post detail page."""
+
+    post = Post.query.get_or_404(post_id)
+    user = post.user
+
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(f'/users/{user.id}')
 
 
 # @app.route("/", methods=["POST"])
