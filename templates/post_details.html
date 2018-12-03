@@ -1,0 +1,25 @@
+<!-- Extending Base Template -->
+{% extends 'base.html' %}
+
+<!-- Tile Content -->
+{% block title %} Post Details {% endblock %}
+
+<!-- Body Content -->
+{% block body %}
+<div>
+  <h1>{{ post.title }}</h1>
+  <p>{{ post.content }}</p>
+  <p>By {{ user.full_name }}</p>
+</div>
+
+<div>
+  <a href="/users/{{ user.id }}"><button>Cancel</button></a>
+  <form action="/posts/{{ post.id }}/edit">
+    <button type="submit">Edit</button>
+  </form>
+  <form action="/posts/{{ post.id }}/delete">
+    <button type="submit">Delete</button>
+  </form>
+</div>
+
+{% endblock%}

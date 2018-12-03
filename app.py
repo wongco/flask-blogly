@@ -2,7 +2,7 @@
 
 from flask import Flask, request, redirect, render_template
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -60,19 +60,20 @@ def get_user_details(user_id):
     """Displays details for a user."""
 
     user = User.query.get_or_404(user_id)
+    posts = user.posts
     print(repr(user))
-    return render_template('/user_details.html', user=user)
+    return render_template('/user_details.html', user=user, posts=posts)
 
 
-@app.route("/users/<user_id>/edit")
+@app.route("/users/<int:user_id>/edit")
 def edit_user(user_id):
     """Displays an edit form for user profile."""
 
     user = User.query.get_or_404(user_id)
-    return render_template('user_edit.html', user=user)
+    return render_template('/user_edit.html', user=user)
 
 
-@app.route("/users/<user_id>/edit", methods=["POST"])
+@app.route("/users/<int:user_id>/edit", methods=["POST"])
 def submit_edit_user(user_id):
     """Processes the edit form for user profile."""
     user = User.query.get_or_404(user_id)
@@ -86,13 +87,36 @@ def submit_edit_user(user_id):
     return redirect(f'/users/{user_id}')
 
 
-@app.route("/users/<user_id>/delete", methods=["POST"])
+@app.route("/users/<int:user_id>/delete", methods=["POST"])
 def delete_user(user_id):
     """Deletes a user."""
     user = User.query.get_or_404(user_id)
+
     db.session.delete(user)
     db.session.commit()
+
     return redirect('/users')
+
+
+@app.route('/users/<int:user_id>/posts/new')
+def add_new_post(user_id):
+    '''Show form to add a post for that user'''
+    user = User.query.get_or_404(user_id)
+    return render_template('/post_add.html', user=user)
+
+
+@app.route("/users/<int:user_id>/posts", methods=["POST"])
+def submit_new_post(user_id):
+    """Handle add form; add post and redirect to user detail page."""
+    response = request.form
+    title = response['title']
+    content = response['content']
+    new_post = Post(title=title, content=content, user_id=user_id)
+
+    db.session.add(new_post)
+    db.session.commit()
+
+    return redirect(f'/users/{user_id}')
 
 
 # @app.route("/", methods=["POST"])

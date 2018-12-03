@@ -17,6 +17,24 @@
       <button type="submit">Delete</button>
     </form>
     </div>
+    <a href="/users">Back to user list</a>
+</div>
+
+{% if posts %}
+<div>
+  <h1>Posts</h1>
+  <ul>
+  {% for post in posts %}
+  <li>{{ post.title }}</li>
+  {% endfor %}
+</ul>
+
+</div>
+{% endif %}
+<div>
+  <form action="/users/{{ user.id }}/posts/new">
+    <button type="submit">Add Post</button>
+  </form>
 </div>
 
 {% endblock%}

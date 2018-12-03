@@ -1,0 +1,22 @@
+<!-- Extending Base Template -->
+{% extends 'base.html' %}
+
+<!-- Tile Content -->
+{% block title %} Add Post {% endblock %}
+
+<!-- Body Content -->
+{% block body %}
+<form action="/users/{{ user.id }}/posts" method="POST">
+  <h1>Add Post for {{ user.full_name }}</h1>
+  <p>
+    Title:
+    <input name="title" required />
+  </p>
+  <p>
+    Content:
+    <input name="content" required />
+  </p>
+  <a href="/users/{{ user.id }}"><button>Cancel</button></a>
+  <button type="submit">Add</button>
+</form>
+{% endblock%}

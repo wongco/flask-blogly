@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 """Models for Blogly."""
 """Demo file showing off a model for SQLAlchemy."""
 
@@ -37,10 +38,38 @@ class User(db.Model):
         return f'{self.first_name} {self.last_name}'
 
     def __repr__(self):
-        """Show info about pet."""
+        """Show info about user."""
 
         user = self
         return f"<User {user.id} {user.get_full_name()}>"
+
+    # direct-nav: user -> posts & back
+    posts = db.relationship('Post', backref='user')
+
+
+class Post(db.Model):
+    """User."""
+
+    __tablename__ = "posts"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(25), nullable=False)
+    content = db.Column(db.String(180), nullable=False)
+    # Sets created_at to a string of current time and date
+    created_at = db.Column(
+        db.String(),
+        nullable=True,
+        default=datetime.datetime.now().strftime('%c'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @property
+    def full_name(self):
+        """Returns the full name as a property"""
+        return self.get_full_name()
+
+    def __repr__(self):
+        """Renders prettified details."""
+        return f'id: {self.id}, title: {self.title}, created at: {self.created_at}, ref_user: {self.user_id}'
 
     # @classmethod
     # def get_by_species(cls, species):
