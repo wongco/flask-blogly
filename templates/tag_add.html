@@ -1,0 +1,18 @@
+<!-- Extending Base Template -->
+{% extends 'base.html' %}
+
+<!-- Tile Content -->
+{% block title %} Add Tag {% endblock %}
+
+<!-- Body Content -->
+{% block body %}
+<form action="/tags" method="POST">
+  <h1>Create a tag</h1>
+  <p>
+    Tag Name:
+    <input name="name" required placeholder='Enter a tag name'/>
+  </p>
+  <a href="/tags"><button type="button">Cancel</button></a>
+  <button type="submit">Add</button>
+</form>
+{% endblock%}

@@ -12,8 +12,17 @@
   <p>By {{ user.full_name }}</p>
 </div>
 
+{% if tags %}
 <div>
-  <a href="/users/{{ user.id }}"><button>Cancel</button></a>
+  <span>Tags: </span>
+  {% for tag in tags %}
+  <div><a href="/tags/{{ tag.id }}">{{ tag.name }}</a></div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div>
+  <a href="/users/{{ user.id }}"><button type="button">Cancel</button></a>
   <form action="/posts/{{ post.id }}/edit">
     <button type="submit">Edit</button>
   </form>

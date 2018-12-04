@@ -16,7 +16,17 @@
     Content:
     <input name="content" required value='{{ post.content }}'/>
   </p>
-  <a href="/post/{{ post.id }}"><button>Cancel</button></a>
+
+  {% if tags %}
+  <div>
+    {% for tag in tags %}
+    <input type="checkbox" name='tag_names' {% if tag in post.tags %}checked{% endif %} value='{{ tag.name }}'>
+    <label for="tag_names">{{ tag.name }}</label>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <a href="/posts/{{ post.id }}"><button type="button">Cancel</button></a>
   <button type="submit">Add</button>
 </form>
 {% endblock%}

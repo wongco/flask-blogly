@@ -43,11 +43,11 @@ class User(db.Model):
         return f"<User {user.id} {user.get_full_name()}>"
 
     # direct-nav: user -> posts & back
-    posts = db.relationship('Post', backref='user')
+    posts = db.relationship('Post', cascade='delete', backref='user')
 
 
 class Post(db.Model):
-    """User."""
+    """Post."""
 
     __tablename__ = "posts"
 
@@ -61,10 +61,34 @@ class Post(db.Model):
 
     def __repr__(self):
         """Renders prettified details."""
-        return f'id: {self.id}, title: {self.title}, created at: {self.created_at}, ref_user: {self.user_id}'
+        return f'<id: {self.id}, title: {self.title}, created at: {self.created_at}, ref_user: {self.user_id}>'
 
-    # @classmethod
-    # def get_by_species(cls, species):
-    #     """Get all pets matching that species."""
+    tags = db.relationship(
+        'Tag', cascade="delete", secondary='posttags', backref='posts')
 
-    #     return cls.query.filter_by(species=species).all()
+
+class Tag(db.Model):
+    """Tag."""
+
+    __tablename__ = "tags"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(15), nullable=False, unique=True)
+
+    def __repr__(self):
+        """Renders prettified details."""
+        return f'<id: {self.id}, name: {self.name}>'
+
+
+class PostTag(db.Model):
+    """Join table of Post and Tag."""
+
+    __tablename__ = "posttags"
+
+    post_id = db.Column(
+        db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
+
+    def __repr__(self):
+        """Renders prettified details."""
+        return f'post_id: {self.post_id}, tag_id: {self.tag_id}'

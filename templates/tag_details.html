@@ -1,0 +1,32 @@
+<!-- Extending Base Template -->
+{% extends 'base.html' %}
+
+<!-- Tile Content -->
+{% block title %} Tag Details {% endblock %}
+
+<!-- Body Content -->
+{% block body %}
+<div>
+  <h1>{{ tag.name }}</h1>
+</div>
+
+{% if posts %}
+<div>
+  <ul>
+    {% for post in posts %}
+    <li><a href="/posts/{{ post.id }}/edit">{{ post.name }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div>
+  <form action="/tags/{{ tag.id }}/edit">
+    <button type="submit">Edit</button>
+  </form>
+  <form action="/tags/{{ tag.id }}/delete" method="POST">
+    <button type="submit">Delete</button>
+  </form>
+</div>
+
+{% endblock%}

@@ -1,0 +1,21 @@
+<!-- Extending Base Template -->
+{% extends 'base.html' %}
+
+<!-- Tile Content -->
+{% block title %} Tags {% endblock %}
+
+<!-- Body Content -->
+{% block body %}
+<h1>Tags</h1>
+<ul>
+  {% for tag in tags %}
+  <li>
+    <a href="/tags/{{ tag.id }}">{{ tag.name }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+<form action="/tags/new" method="GET">
+  <button type="submit">Add a tag</button>
+</form>
+{% endblock%}
