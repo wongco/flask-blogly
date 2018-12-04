@@ -171,20 +171,17 @@ def edit_post(post_id):
     post.title = response['title']
     post.content = response['content']
 
-    # Tags already on post
-    post_tags = post.tags
-    # Tags to be added
     tag_list = response.getlist('tag_names')
 
-    # if in post_tags and not in tag_list remove it from post_tags
+    # remove existing tags instances from post.tags relationship
+    post.tags = []
+
+    # if tag_list contains tag items
     if tag_list:
+        # kill post tags, rebuild from scratch
         for tag_name in tag_list:
-            if tag_name not in post_tags:
-                tag = Tag.query.filter(Tag.name == tag_name).first()
-                post.tags.append(tag)
-        for tag in post_tags:
-            if tag.name not in tag_list:
-                post.tags.remove(tag)
+            tag = Tag.query.filter(Tag.name == tag_name).first()
+            post.tags.append(tag)
 
     db.session.add(post)
     db.session.commit()
@@ -277,26 +274,3 @@ def delete_tag(tag_id):
     db.session.commit()
 
     return redirect(f'/tags')
-
-
-# @app.route("/", methods=["POST"])
-# def add_pet():
-#     """Add pet and redirect to list."""
-
-#     name = request.form.get('name')
-#     species = request.form.get('species')
-#     hunger = request.form.get('hunger')
-#     hunger = int(hunger) if hunger else None
-
-#     pet = Pet(name=name, species=species, hunger=hunger)
-#     db.session.add(pet)
-#     db.session.commit()
-
-#     return redirect("/")
-
-# @app.route("/<int:pet_id>")
-# def show_pet(pet_id):
-#     """Show info on a single pet."""
-
-#     pet = Pet.query.get_or_404(pet_id)
-#     return render_template("detail.html", pet=pet)

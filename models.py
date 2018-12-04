@@ -23,8 +23,7 @@ class User(db.Model):
     image_url = db.Column(
         db.Text,
         nullable=True,
-        default=
-        "https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
+        default="https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
     )
 
     @property
