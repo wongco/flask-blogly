@@ -261,7 +261,7 @@ def edit_tag(tag_id):
     db.session.add(tag)
     db.session.commit()
 
-    return redirect(f'/tags')
+    return redirect('/tags')
 
 
 @app.route("/tags/<int:tag_id>/delete", methods=["POST"])
@@ -273,4 +273,4 @@ def delete_tag(tag_id):
     db.session.delete(tag)
     db.session.commit()
 
-    return redirect(f'/tags')
+    return redirect('/tags')
