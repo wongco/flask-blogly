@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 """Models for Blogly."""
 """Demo file showing off a model for SQLAlchemy."""
 
@@ -64,6 +65,15 @@ class Post(db.Model):
     def __repr__(self):
         """Renders prettified details."""
         return f'<id: {self.id}, title: {self.title}, created at: {self.created_at}, ref_user: {self.user_id}>'
+
+    def pretty_created_time(self):
+        """Renders prettified time string."""
+
+        # create time object from SQL Alchemy Time
+        f_time = datetime.strptime(
+            self.created_at.split('.')[0], '%Y-%m-%d %H:%M:%S')
+
+        return datetime.strftime(f_time, "%a %b %d %Y, %I:%M %p").replace(" 0", " ")
 
     # pass-through relationship -> tags & post backref via postttags
     tags = db.relationship(

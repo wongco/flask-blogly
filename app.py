@@ -37,7 +37,9 @@ def get_users():
     # Sorts the user list by last name ascending then first name ascending. Does not account for casing. Yet.
     users = User.query.order_by("last_name asc", "first_name asc").all()
 
-    return render_template('/users.html', users=users)
+    posts = Post.query.order_by("created_at desc").limit(5).all()
+
+    return render_template('/users.html', users=users, posts=posts)
 
 
 @app.route("/users/new")
