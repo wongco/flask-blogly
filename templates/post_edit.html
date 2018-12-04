@@ -18,15 +18,16 @@
   </p>
 
   {% if tags %}
+  {% for tag in tags %}
   <div>
-    {% for tag in tags %}
     <input type="checkbox" name='tag_names' {% if tag in post.tags %}checked{% endif %} value='{{ tag.name }}'>
     <label for="tag_names">{{ tag.name }}</label>
-    {% endfor %}
   </div>
+  {% endfor %}
   {% endif %}
-
-  <a href="/posts/{{ post.id }}"><button type="button">Cancel</button></a>
-  <button type="submit">Add</button>
+  <div>
+    <a href="/posts/{{ post.id }}"><button class="btn btn-outline-primary" type="button">Cancel</button></a>
+    <button class="btn btn-success" type="submit">Add</button>
+  </div>
 </form>
 {% endblock%}

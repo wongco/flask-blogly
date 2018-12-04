@@ -21,14 +21,20 @@
 </div>
 {% endif %}
 
-<div>
-  <a href="/users/{{ user.id }}"><button type="button">Cancel</button></a>
-  <form action="/posts/{{ post.id }}/edit">
-    <button type="submit">Edit</button>
-  </form>
-  <form action="/posts/{{ post.id }}/delete" method="POST">
-    <button type="submit">Delete</button>
-  </form>
+<div class="row my-1">
+  <div class="mx-1">
+    <a href="/users/{{ user.id }}"><button class="btn btn-outline-primary" type="button">Cancel</button></a>
+  </div>
+  <div class="mx-1">
+    <form action="/posts/{{ post.id }}/edit">
+      <button class="btn btn-outline-info" type="submit">Edit</button>
+    </form>
+  </div>
+  <div class="mx-1">
+    <form action="/posts/{{ post.id }}/delete" method="POST">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
 </div>
 
 {% endblock%}

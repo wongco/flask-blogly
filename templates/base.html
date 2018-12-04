@@ -31,20 +31,23 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="/"
-              >Home <span class="sr-only">(current)</span></a
-            >
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="/users">Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/tags">Tags</a>
           </li>
         </ul>
         <span class="navbar-text">Designed by YozoraNoHoshi & WongCo</span>
       </div>
     </nav>
+    
     {% block body %} {% endblock %}
     <!-- Flash Message Div Block -->
     <div>
       {% for flash in get_flashed_messages() %}
-      <p>{{flash}}</p>
+      <p>{{ flash }}</p>
       {% endfor %}
     </div>
     <script

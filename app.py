@@ -25,10 +25,10 @@ def page_not_found(erro):
 
 
 @app.route("/")
-def redirect_to_users():
-    """Redirects to /users."""
+def redirect_to_posts():
+    """Redirects to /posts"""
 
-    return redirect('/users')
+    return redirect('/posts')
 
 
 @app.route("/users")
@@ -170,6 +170,15 @@ def submit_new_post(user_id):
     flash("New post was added!")
 
     return redirect(f'/users/{user_id}')
+
+
+@app.route("/posts")
+def get_recent_posts():
+    """Show a list of recent posts"""
+
+    posts = Post.query.order_by("created_at desc").limit(5).all()
+
+    return render_template('/post_recent.html', posts=posts)
 
 
 @app.route('/posts/<int:post_id>')
