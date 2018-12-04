@@ -19,9 +19,9 @@ db.create_all()
 
 
 @app.errorhandler(404)
-def page_not_found(e):
-
-    return render_template('/error.html')
+def page_not_found(erro):
+    """ 404 Handler for Flask """
+    return render_template('/error.html'), 404
 
 
 @app.route("/")
@@ -55,7 +55,7 @@ def add_user():
     last_name = response['last_name']
     image_url = response['image_url']
     if not image_url:
-        image_url = None
+        image_url = "https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
     new_user = User(
         first_name=first_name, last_name=last_name, image_url=image_url)
     db.session.add(new_user)
@@ -82,6 +82,36 @@ def edit_user(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('/user_edit.html', user=user)
+
+
+@app.route("/users/<int:user_id>/edit", methods=["POST"])
+def submit_edit_user(user_id):
+    """Processes the edit form for user profile."""
+    user = User.query.get_or_404(user_id)
+    response = request.form
+    user.first_name = response.get('first_name', user.first_name)
+    user.last_name = response.get('last_name', user.last_name)
+    user.image_url = response.get('image_url', user.image_url)
+
+    # reset image_url to stock pic if image_url is empty
+    if not user.image_url:
+        user.image_url = "https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
+
+    db.session.add(user)
+    db.session.commit()
+
+    return redirect(f'/users/{user_id}')
+
+
+@app.route("/users/<int:user_id>/delete", methods=["POST"])
+def delete_user(user_id):
+    """Deletes a user."""
+    user = User.query.get_or_404(user_id)
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect('/users')
 
 
 @app.route('/users/<int:user_id>/posts/new')
@@ -115,34 +145,9 @@ def submit_new_post(user_id):
     return redirect(f'/users/{user_id}')
 
 
-@app.route("/users/<int:user_id>/edit", methods=["POST"])
-def submit_edit_user(user_id):
-    """Processes the edit form for user profile."""
-    user = User.query.get_or_404(user_id)
-    response = request.form
-    user.first_name = response['first_name']
-    user.last_name = response['last_name']
-    if not user.image_url:
-        user.image_url = response['image_url']
-    db.session.add(user)
-    db.session.commit()
-    return redirect(f'/users/{user_id}')
-
-
-@app.route("/users/<int:user_id>/delete", methods=["POST"])
-def delete_user(user_id):
-    """Deletes a user."""
-    user = User.query.get_or_404(user_id)
-
-    db.session.delete(user)
-    db.session.commit()
-
-    return redirect('/users')
-
-
 @app.route('/posts/<int:post_id>')
 def get_post_details(post_id):
-    '''Show a post.'''
+    """Show a post."""
 
     post = Post.query.get_or_404(post_id)
     user = post.user
@@ -154,7 +159,7 @@ def get_post_details(post_id):
 
 @app.route('/posts/<int:post_id>/edit')
 def get_post_edit_form(post_id):
-    '''Displays the edit form for a post'''
+    """Displays the edit form for a post"""
 
     post = Post.query.get_or_404(post_id)
     tags = Tag.query.all()
@@ -171,15 +176,15 @@ def edit_post(post_id):
     post.title = response['title']
     post.content = response['content']
 
-    tag_list = response.getlist('tag_names')
+    target_tags = response.getlist('tag_names')
 
     # remove existing tags instances from post.tags relationship
     post.tags = []
 
-    # if tag_list contains tag items
-    if tag_list:
+    # if target_tags contains tag items
+    if target_tags:
         # kill post tags, rebuild from scratch
-        for tag_name in tag_list:
+        for tag_name in target_tags:
             tag = Tag.query.filter(Tag.name == tag_name).first()
             post.tags.append(tag)
 
@@ -212,7 +217,7 @@ def display_all_tags():
 
 @app.route('/tags/<int:tag_id>')
 def get_tag_details(tag_id):
-    '''Show a tag.'''
+    """Show a tag."""
 
     tag = Tag.query.get_or_404(tag_id)
     posts = tag.posts
@@ -222,7 +227,7 @@ def get_tag_details(tag_id):
 
 @app.route('/tags/new')
 def add_new_tag():
-    '''Show form to add a tag'''
+    """Show form to add a tag"""
 
     return render_template('/tag_add.html')
 
@@ -243,7 +248,7 @@ def add_tag():
 
 @app.route('/tags/<int:tag_id>/edit')
 def get_tag_edit_form(tag_id):
-    '''Displays the edit form for a tag'''
+    """Displays the edit form for a tag"""
 
     tag = Tag.query.get_or_404(tag_id)
 

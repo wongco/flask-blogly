@@ -62,6 +62,7 @@ class Post(db.Model):
         """Renders prettified details."""
         return f'<id: {self.id}, title: {self.title}, created at: {self.created_at}, ref_user: {self.user_id}>'
 
+    # pass-through relationship -> tags & post backref via postttags
     tags = db.relationship(
         'Tag', cascade="delete", secondary='posttags', backref='posts')
 

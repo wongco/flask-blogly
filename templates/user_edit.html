@@ -30,17 +30,13 @@
   <p>
     Image URL:
     <input
-      name="image_url"
-      type="url"
-      placeholder="Provide an image
-    of this user"
-      {% if not user.image_url %}
-      value="{{ user.image_url }}"
-      {% endif %}
-    />
+      name="image_url" type="url" placeholder="Provide an image of this user" value="{{ user.image_url }}" />
   </p>
   <a href="/users/{{ user.id }}"><button type="button">Cancel</button></a>
   <div><button type="submit">Save</button></div>
 </form>
 
 {% endblock%}
+
+      <!-- {% if not user.image_url %} -->
+           <!-- {% endif %} -->
