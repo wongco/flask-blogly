@@ -4,6 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+# default image placeholder for user profile
+STOCK_IMAGE_URL = "https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
+
 
 def connect_db(app):
     """Connect to database."""
@@ -23,7 +26,7 @@ class User(db.Model):
     image_url = db.Column(
         db.Text,
         nullable=True,
-        default="https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
+        default=STOCK_IMAGE_URL
     )
 
     @property

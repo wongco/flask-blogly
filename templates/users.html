@@ -6,19 +6,26 @@
 
 <!-- Body Content -->
 {% block body %}
-<h1>Users</h1>
-<ul>
-  {% for user in users %}
-  <li>
-    <a href="/users/{{ user.id }}">{{ user.full_name }}</a>
-  </li>
-  {% endfor %}
-</ul>
 
-<h1>Create a user</h1>
-<form action="/users/new" method="GET">
-  <button type="submit">Add a user</button>
-</form>
+<!-- User List Block -->
+<div>
+  <h1>Users</h1>
+  <ul>
+    {% for user in users %}
+    <li>
+      <a href="/users/{{ user.id }}">{{ user.full_name }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
 
-<a href="/tags"><h1>Tags</h1></a>
+<!-- Create User Block -->
+<div>
+  <h1>Create a user</h1>
+  <form action="/users/new" method="GET">
+    <button class="btn btn-success" type="submit">Add User</button>
+  </form>
+  <div class="btn btn-success" type="submit"><a href="/tags">Show Tags</a></div>
+</div>
+
 {% endblock%}

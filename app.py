@@ -1,8 +1,8 @@
 # """Blogly application."""
 
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Post, Tag, PostTag
+from models import db, connect_db, User, Post, Tag, PostTag, STOCK_IMAGE_URL
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -42,7 +42,7 @@ def get_users():
 
 @app.route("/users/new")
 def add_users():
-    """Add a user."""
+    """Display add a user form"""
 
     return render_template('user_add.html')
 
@@ -51,15 +51,24 @@ def add_users():
 def add_user():
     """Proccess the form for adding a users."""
     response = request.form
-    first_name = response['first_name']
-    last_name = response['last_name']
-    image_url = response['image_url']
+    first_name = response.get('first_name')
+    last_name = response.get('last_name')
+
+    if not first_name or not last_name:
+        # logic to prevent creation of user without first or last name
+        return redirect('/users')
+
+    image_url = response.get('image_url')
+
     if not image_url:
-        image_url = "https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
+        image_url = STOCK_IMAGE_URL
+
     new_user = User(
         first_name=first_name, last_name=last_name, image_url=image_url)
+
     db.session.add(new_user)
     db.session.commit()
+    flash(f"User {new_user.fullname} Created!")
 
     return redirect('/users')
 
@@ -70,7 +79,6 @@ def get_user_details(user_id):
 
     user = User.query.get_or_404(user_id)
     posts = user.posts
-    print(repr(user))
 
     return render_template('/user_details.html', user=user, posts=posts)
 
@@ -87,6 +95,7 @@ def edit_user(user_id):
 @app.route("/users/<int:user_id>/edit", methods=["POST"])
 def submit_edit_user(user_id):
     """Processes the edit form for user profile."""
+
     user = User.query.get_or_404(user_id)
     response = request.form
     user.first_name = response.get('first_name', user.first_name)
@@ -95,10 +104,12 @@ def submit_edit_user(user_id):
 
     # reset image_url to stock pic if image_url is empty
     if not user.image_url:
-        user.image_url = "https://vignette.wikia.nocookie.net/sote-rp/images/c/c4/User-placeholder.png/revision/latest?cb=20150624004222"
+        user.image_url = STOCK_IMAGE_URL
 
     db.session.add(user)
     db.session.commit()
+
+    flash(f"Details for {user.full_name} has been updated!")
 
     return redirect(f'/users/{user_id}')
 
@@ -106,10 +117,15 @@ def submit_edit_user(user_id):
 @app.route("/users/<int:user_id>/delete", methods=["POST"])
 def delete_user(user_id):
     """Deletes a user."""
+
     user = User.query.get_or_404(user_id)
+
+    deleted_user_fullname = user.full_name
 
     db.session.delete(user)
     db.session.commit()
+
+    flash(f"{deleted_user_fullname} was deleted!")
 
     return redirect('/users')
 
@@ -117,6 +133,7 @@ def delete_user(user_id):
 @app.route('/users/<int:user_id>/posts/new')
 def add_new_post(user_id):
     '''Show form to add a post for that user'''
+
     user = User.query.get_or_404(user_id)
     tags = Tag.query.all()
 
@@ -126,9 +143,15 @@ def add_new_post(user_id):
 @app.route("/users/<int:user_id>/posts", methods=["POST"])
 def submit_new_post(user_id):
     """Handle add form; add post and redirect to user detail page."""
+
     response = request.form
-    title = response['title']
-    content = response['content']
+    title = response.get('title')
+    content = response.get('content')
+
+    if not title or not content:
+        # logic to prevent creation of post without title or content
+        return redirect(f'/users/{user_id}')
+
     new_post = Post(title=title, content=content, user_id=user_id)
     tag_list = response.getlist('tag_names')
 
@@ -141,6 +164,8 @@ def submit_new_post(user_id):
             new_post.tags.append(tag)
 
     db.session.commit()
+
+    flash("New post was added!")
 
     return redirect(f'/users/{user_id}')
 
@@ -191,6 +216,8 @@ def edit_post(post_id):
     db.session.add(post)
     db.session.commit()
 
+    flash("Post was updated!")
+
     return redirect(f'/posts/{post_id}')
 
 
@@ -204,6 +231,8 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
 
+    flash("Post was deleted!")
+
     return redirect(f'/users/{user.id}')
 
 
@@ -213,23 +242,6 @@ def display_all_tags():
     tags = Tag.query.all()
 
     return render_template('tag_list.html', tags=tags)
-
-
-@app.route('/tags/<int:tag_id>')
-def get_tag_details(tag_id):
-    """Show a tag."""
-
-    tag = Tag.query.get_or_404(tag_id)
-    posts = tag.posts
-
-    return render_template('/tag_details.html', posts=posts, tag=tag)
-
-
-@app.route('/tags/new')
-def add_new_tag():
-    """Show form to add a tag"""
-
-    return render_template('/tag_add.html')
 
 
 @app.route("/tags", methods=["POST"])
@@ -243,7 +255,26 @@ def add_tag():
     db.session.add(new_tag)
     db.session.commit()
 
+    flash(f"Tag: <{new_tag.name}> was added!")
+
     return redirect('/tags')
+
+
+@app.route('/tags/new')
+def add_new_tag():
+    """Show form to add a tag"""
+
+    return render_template('/tag_add.html')
+
+
+@app.route('/tags/<int:tag_id>')
+def get_tag_details(tag_id):
+    """Show a tag."""
+
+    tag = Tag.query.get_or_404(tag_id)
+    posts = tag.posts
+
+    return render_template('/tag_details.html', posts=posts, tag=tag)
 
 
 @app.route('/tags/<int:tag_id>/edit')
@@ -266,6 +297,8 @@ def edit_tag(tag_id):
     db.session.add(tag)
     db.session.commit()
 
+    flash(f"Tag: <{tag.name}> was updated!")
+
     return redirect('/tags')
 
 
@@ -274,8 +307,11 @@ def delete_tag(tag_id):
     """Handle delete a tag and redirect to tag detail page."""
 
     tag = Tag.query.get_or_404(tag_id)
+    deleted_tag_name = tag.name
 
     db.session.delete(tag)
     db.session.commit()
+
+    flash(f"Tag: <{deleted_tag_name}> was deleted!")
 
     return redirect('/tags')
