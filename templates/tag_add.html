@@ -8,11 +8,23 @@
 {% block body %}
 <form action="/tags" method="POST">
   <h1>Create a tag</h1>
-  <p>
-    Tag Name:
-    <input name="name" required placeholder='Enter a tag name'/>
-  </p>
-  <a href="/tags"><button type="button">Cancel</button></a>
-  <button type="submit">Add</button>
+  <label for="name">Name:</label>
+  <input name="name" required placeholder="Enter a tag name" />
+
+  <div>
+    {% for post in posts %}
+    <div>
+      <input type="checkbox" name='post_names' value='{{ post.title }}'>
+      <label for="tag_names">{{ post.title }}</label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div>
+    <a href="/tags"
+      ><button class="btn btn-outline-primary" type="button">Cancel</button></a
+    >
+    <button class="btn btn-success" type="submit">Add</button>
+  </div>
 </form>
 {% endblock%}

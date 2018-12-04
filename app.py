@@ -202,7 +202,6 @@ def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
     post.title = response['title']
     post.content = response['content']
-
     target_tags = response.getlist('tag_names')
 
     # remove existing tags instances from post.tags relationship
@@ -257,6 +256,17 @@ def add_tag():
     db.session.add(new_tag)
     db.session.commit()
 
+    target_posts = response.getlist('post_names')
+
+    # if target_post contains post items
+    if target_posts:
+        # kill post posts, rebuild from scratch
+        for post_title in target_posts:
+            post = Post.query.filter(Post.title == post_title).first()
+            post.tags.append(new_tag)
+
+    db.session.commit()
+
     flash(f"Tag: <{new_tag.name}> was added!")
 
     return redirect('/tags')
@@ -266,7 +276,9 @@ def add_tag():
 def add_new_tag():
     """Show form to add a tag"""
 
-    return render_template('/tag_add.html')
+    posts = Post.query.all()
+
+    return render_template('/tag_add.html', posts=posts)
 
 
 @app.route('/tags/<int:tag_id>')
@@ -284,8 +296,9 @@ def get_tag_edit_form(tag_id):
     """Displays the edit form for a tag"""
 
     tag = Tag.query.get_or_404(tag_id)
+    posts = Post.query.all()
 
-    return render_template('/tag_edit.html', tag=tag)
+    return render_template('/tag_edit.html', tag=tag, posts=posts)
 
 
 @app.route("/tags/<int:tag_id>/edit", methods=["POST"])
@@ -298,6 +311,20 @@ def edit_tag(tag_id):
 
     db.session.add(tag)
     db.session.commit()
+
+    target_posts = response.getlist('post_names')
+
+    # remove existing tags instances from tag.posts relationship
+    tag.posts = []
+
+    # if target_post contains post items
+    if target_posts:
+        # kill post posts, rebuild from scratch
+        for post_title in target_posts:
+            post = Post.query.filter(Post.title == post_title).first()
+            post.tags.append(tag)
+
+        db.session.commit()
 
     flash(f"Tag: <{tag.name}> was updated!")
 
